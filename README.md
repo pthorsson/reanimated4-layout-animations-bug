@@ -1,8 +1,12 @@
-# Welcome to your Expo app 👋
+# reanimated4-layout-animations-bug
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Minimal reproduction for a bug in React Native Reanimated 4 where `Animated.View` components with `exiting` layout animations get stuck on screen after unmounting. See `BUG_REPORT.md` for full details.
 
-## Get started
+## Running the app
+
+Android only — this bug has not been tested on iOS.
+
+**Prerequisites:** Android Studio with an emulator set up, or a physical Android device connected via USB with developer mode enabled.
 
 1. Install dependencies
 
@@ -10,41 +14,27 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
+2. Run on Android
 
    ```bash
-   npx expo start
+   npm run android
    ```
 
-In the output, you'll find options to open the app in a
+## Reproducing the bug
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+1. Tap **Start** — items begin cycling in and out with zoom animations
+2. Wait for the automatic spike (fires every 1s, shown by the countdown)
+3. Observe that one or more items remain stuck on screen even though they are no longer in the React tree
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Tweaking spike settings
 
-## Get a fresh project
+The spike is what stresses the UI thread to trigger the bug. The right values depend on the device — too low and the bug won't appear, too high and the app may crash or freeze.
 
-When you're ready, run:
+Adjust these constants at the top of `src/App.tsx`:
 
-```bash
-npm run reset-project
+```ts
+const SPIKE_COUNT = 30; // Number of animated views mounted in each spike
+const SPIKE_INTERVAL_MS = 1000; // How often the spike fires (ms)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+If you can't reproduce it, try increasing `SPIKE_COUNT`. If the app becomes unresponsive, lower it.
