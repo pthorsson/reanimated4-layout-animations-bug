@@ -37,4 +37,4 @@ const SPIKE_COUNT = 30; // Number of animated views mounted in each spike
 const SPIKE_INTERVAL_MS = 1000; // How often the spike fires (ms)
 ```
 
-If you can't reproduce it, try increasing `SPIKE_COUNT`. If the app becomes unresponsive, lower it.
+If you can't reproduce it, try increasing `SPIKE_COUNT` and/or decreasing `SPIKE_INTERVAL_MS`. If the app becomes unresponsive, lower it.
