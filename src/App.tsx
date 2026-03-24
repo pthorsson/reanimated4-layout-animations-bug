@@ -16,10 +16,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+// UI thread spike settings
+// To create the optimal conditions for the bug to appear these differs from device to device
+const SPIKE_COUNT = 30;
+const SPIKE_INTERVAL_MS = 1000;
+
+const ITEM_LOOP_INTERVAL_MS = 50;
 const ITEM_COUNT = 12;
-const INTERVAL_MS = 20;
-const SPIKE_COUNT = 40;
-const SPIKE_INTERVAL_MS = 2000;
 
 const COLORS = [
   '#FF6B6B',
@@ -46,7 +49,6 @@ function SpikeNode({ index, onDone }: { index: number; onDone: () => void }) {
     );
     const t = setTimeout(onDone, 32); // unmount after ~2 frames
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const style = useAnimatedStyle(() => ({
@@ -89,7 +91,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (running) {
-      intervalRef.current = setInterval(mountNext, INTERVAL_MS);
+      intervalRef.current = setInterval(mountNext, ITEM_LOOP_INTERVAL_MS);
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -217,7 +219,7 @@ export const App: React.FC = () => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#000000',
     paddingTop: 60,
   },
   stressContainer: {
